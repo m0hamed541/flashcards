@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
 import Category from "../../components/Category";
+import DeckCard from "../../components/DeckCard";
 import IconedButton from "../../components/IconedButton";
 import SectionHeader from "../../components/SectionHeader";
 const Home = () => {
@@ -9,18 +10,24 @@ const Home = () => {
     { number: "18", label: "Decks created", color: "bg-orange-100" },
   ];
 
-  const classes = [
+  //category = {
+  //title: "category title",
+  //    color: "#3498db", // Default color
+  //    id: "1",
+  //  }
+  const decks = [
     {
       title: "Fundamentals on Computer Science",
-      instructor: "Cody Fisher",
-      category: "Programming",
-      categoryColor: "bg-blue-100 text-blue-600",
+      color: "bg-blue-100",
+      id: "1",
+      cardsNum: 5,
+      createdAt: "2023-10-01",
+      updatedAt: "2023-10-02",
     },
     {
       title: "Knowledge about Environmental & Science",
-      instructor: "Jacob Jones",
-      category: "Knowledge",
-      categoryColor: "bg-green-100 text-green-600",
+      categoryColor: "bg-green-100",
+      id: "2",
     },
   ];
 
@@ -49,16 +56,12 @@ const Home = () => {
 
       {/* Classes Section */}
       <View className="px-6">
-        <Text className="text-lg font-semibold text-gray-800 mb-4">Topics</Text>
+        <Text className="text-lg font-semibold text-gray-800 mb-4">Decks</Text>
         <View className="gap-4">
-          {classes.map((classItem, index) => (
-            <Category
-              key={index}
-              category={classItem.category}
-              categoryColor={classItem.categoryColor}
-              title={classItem.title}
-              onPress={() => console.log("Card pressed:", classItem.title)}
-            />
+          {decks.map((deck, index) => (
+            <>
+              <DeckCard key={index} deck={deck} />
+            </>
           ))}
         </View>
       </View>
@@ -67,22 +70,22 @@ const Home = () => {
       <View className="px-6 py-8">
         <View className="flex-row gap-2">
           <IconedButton
-        text="Create Deck"
-        icon="plus"
-        onPress={() => console.log("Create Deck")}
-        bgColor="bg-blue-500"
-        textColor="text-white"
-        iconColor="white"
-      />
+            text="Create Deck"
+            icon="plus"
+            onPress={() => console.log("Create Deck")}
+            bgColor="bg-blue-500"
+            textColor="text-white"
+            iconColor="white"
+          />
 
-      <IconedButton
-        text="Study Now"
-        icon="play"
-        onPress={() => console.log("Study Now")}
-        bgColor="bg-gray-200"
-        textColor="text-gray-700"
-        iconColor="#374151"
-      />
+          <IconedButton
+            text="Study Now"
+            icon="play"
+            onPress={() => console.log("Study Now")}
+            bgColor="bg-gray-200"
+            textColor="text-gray-700"
+            iconColor="#374151"
+          />
         </View>
       </View>
     </ScrollView>

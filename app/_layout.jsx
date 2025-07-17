@@ -16,8 +16,9 @@ export default function RootLayout() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Stack >
+      <Stack options={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="screens/AddDeck" options={{ headerShown: false }} />
       </Stack>
     </SafeAreaView>
   );

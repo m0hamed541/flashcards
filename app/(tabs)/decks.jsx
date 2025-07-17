@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import SectionHeader from "../../components/SectionHeader";
+import { router } from "expo-router";
 
 const Decks = () => {
   const [selectedCategory, setSelectedCategory] = useState(
@@ -125,7 +126,13 @@ const Decks = () => {
 
       {/* Floating Action Button */}
       <View className="absolute bottom-24 right-6">
-        <TouchableOpacity className="w-14 h-14 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+        <TouchableOpacity
+          className="w-14 h-14 bg-blue-500 rounded-full flex items-center justify-center shadow-lg"
+          onPress={() => {
+            router.push("../screens/AddDeck");
+            console.log("Add Deck");
+          }}
+        >
           <Feather name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
