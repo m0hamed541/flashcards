@@ -1,76 +1,100 @@
-import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import SectionHeader from "../../components/SectionHeader";
 import { router } from "expo-router";
 import DeckCard from "@/components/DeckCard";
-import { index } from "drizzle-orm/gel-core";
 
-import { decks } from "../../database/dummyData";
+import {
+  getAllCategories,
+  getDecksWithCardCountByCategory,
+  getDecksWithCardCount,
+  getAllDecks,
+} from "../../database/crud";
+import IconedButton from "@/components/IconedButton";
 
 const Decks = () => {
-  const [selectedCategory, setSelectedCategory] = useState(
-    "Science & Environment"
-  );
   const [fabExpanded, setFabExpanded] = useState(false);
+  const [decks, setDecks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = [
-    "Science & Environment",
-    "Programming",
-    "Mathematics",
-    "History",
-    "Languages",
-  ];
+  useEffect(() => {
+    loadDecks();
+  }, []);
+
+
+  const loadDecks = async () => {
+    try {
+      setLoading(true);
+      let loadedDecks;
+      loadedDecks = await getAllDecks();
+      setDecks(loadedDecks);
+    } catch (err) {
+      console.error("Error loading decks:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Unknown";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    } catch {
+      return "Unknown";
+    }
+  };
+
+
+
 
   return (
     <View className="flex-1">
-      {/* Header */}
       <SectionHeader title={"Decks"} />
 
-      {/* Category Tabs */}
-      <View className="px-6 mb-6">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View className="flex-row gap-2">
-            {categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full ${
-                  selectedCategory === category ? "bg-blue-500" : "bg-white"
-                }`}
-              >
-                <Text
-                  className={`text-sm font-medium ${
-                    selectedCategory === category
-                      ? "text-white"
-                      : "text-gray-600"
-                  }`}
-                >
-                  {category}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
-      </View>
+      {loading && (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#3B82F6" />
+          <Text className="text-gray-600 mt-4">Loading decks...</Text>
+        </View>
+      )}
 
       {/* Decks List */}
-      <ScrollView className="flex-1 px-6">
-        <View className="gap-4">
-          {decks.map((deck) => (
-            <DeckCard
-              key={deck.id}
-              deck_title={deck.title}
-              card_color={deck.color}
-              created_at={deck.created_at}
-              onPress={() => {
-                console.log(`Deck pressed: ${deck.title}`);
-                router.push("screens/DeckView");
-              }}
-            />
-          ))}
-        </View>
-      </ScrollView>
+      {!loading && (
+        <ScrollView className="flex-1 px-6">
+          {decks.length === 0 ? (
+            <View className="flex-1 justify-center items-center py-20">
+              <Feather name="inbox" size={48} color="#9CA3AF" />
+              <Text className="text-gray-500 text-center mt-4 text-lg">
+                "No decks found"
+              </Text>
+              <Text className="text-gray-400 text-center mt-2">
+                Create your first deck to get started!
+              </Text>
+            </View>
+          ) : (
+            <View className="gap-4">
+              {decks.map((deck, index) => (
+                <DeckCard
+                  key={deck.id}
+                  deck_title={deck.name}
+                  card_color={deck.color}
+                  created_at={formatDate(deck.created_at)}
+                  card_count={deck.card_count || 0}
+                  category_name={deck.category_name}
+                />
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      )}
 
       {/* Floating Action Button */}
       <View className="absolute bottom-24 right-6 items-end">

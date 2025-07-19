@@ -7,8 +7,6 @@ export default function DeckCard({
   created_at = new Date().toLocaleDateString(),
   category_color = "#3498db", // Default color
   card_color = "#ffffff", // Default card color
-  card_text_color = "#d400ffff", // Default text color
-
   onPress = () => {
     console.log("Deck pressed");
   },
@@ -17,7 +15,7 @@ export default function DeckCard({
     <TouchableOpacity
       onPress={onPress}
       className="bg-white rounded-2xl p-4 shadow-sm"
-      style={{ backgroundColor: card_color, color: card_text_color }}
+      style={{ backgroundColor: card_color}}
     >
       <View className="flex-row items-center justify-between mb-3">
         <View

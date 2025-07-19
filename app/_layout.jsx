@@ -1,22 +1,25 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect } from "react";
 import "../constants/global.css";
 
-import * as SQLite from "expo-sqlite";
-import { drizzle } from "drizzle-orm/expo-sqlite";
+import { initializeDatabase } from "../database/initialization";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  // Initialize database when component mounts
+  useEffect(() => {
+    initializeDatabase();
+  }, []);
+
   if (!loaded) {
     // Async font loading only occurs in development.
     return null;
   }
-  const expo = SQLite.openDatabaseSync("db.db");
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -24,10 +27,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="screens/AddDeck" options={{ headerShown: false }} />
         <Stack.Screen name="screens/AddCard" options={{ headerShown: false }} />
-
         <Stack.Screen name="screens/AddCategory" options={{ headerShown: false }} />
         <Stack.Screen name="screens/DeckView" options={{ headerShown: false }} />
-
       </Stack>
     </SafeAreaView>
   );

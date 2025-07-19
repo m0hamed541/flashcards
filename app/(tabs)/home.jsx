@@ -1,40 +1,49 @@
-import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Text, View, ActivityIndicator } from "react-native";
 import Category from "../../components/Category";
 import DeckCard from "../../components/DeckCard";
 import IconedButton from "../../components/IconedButton";
 import SectionHeader from "../../components/SectionHeader";
+import { getAllDecks } from "@/database/crud";
+
 const Home = () => {
+  const [decks, setDecks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+
+  useEffect(() => {
+    loadDecks();
+  }, []);
   const stats = [
     { number: "34", label: "Studied cards", color: "bg-purple-100" },
-    { number: "18", label: "Decks created", color: "bg-orange-100" },
+    { number: decks.length, label: "Decks created", color: "bg-orange-100" },
   ];
+  const loadDecks = async () => {
+    try {
+      setLoading(true);
+      let loadedDecks;
+      loadedDecks = await getAllDecks();
+      setDecks(loadedDecks);
+    } catch (err) {
+      console.error("Error loading decks:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  //category = {
-  //title: "category title",
-  //    color: "#3498db", // Default color
-  //    id: "1",
-  //  }
-  const decks = [
-    {
-      title: "Fundamentals on Computer Science",
-      color: "bg-blue-100",
-      id: "1",
-      cardsNum: 5,
-      createdAt: "2023-10-01",
-      updatedAt: "2023-10-02",
-    },
-    {
-      title: "Knowledge about Environmental & Science",
-      categoryColor: "bg-green-100",
-      id: "2",
-    },
-  ];
+  const formatDate = (dateString) => {
+    if (!dateString) return "Unknown";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    } catch {
+      return "Unknown";
+    }
+  };
 
   return (
     <ScrollView className="flex-1">
       {/* Header */}
-
       <SectionHeader title={"Home"} />
 
       {/* Stats Cards */}
@@ -58,11 +67,32 @@ const Home = () => {
       <View className="px-6">
         <Text className="text-lg font-semibold text-gray-800 mb-4">Decks</Text>
         <View className="gap-4">
-          {decks.map((deck, index) => (
-            <>
-              <DeckCard key={index} deck={deck} />
-            </>
-          ))}
+          {loading ? (
+            <View className="flex-1 justify-center items-center bg-gray-50">
+              <ActivityIndicator size="large" color="#3B82F6" />
+              <Text className="text-gray-600 mt-4 text-base">
+                Loading your decks...
+              </Text>
+            </View>
+          ) : decks.length > 0 ? (
+            decks.map((deck) => (
+              <DeckCard
+                key={deck.id}
+                deck_title={deck.name}
+                card_color={deck.color}
+                created_at={formatDate(deck.created_at)}
+                card_count={deck.card_count || 0}
+                category_name={deck.category_name}
+              />
+            ))
+          ) : (
+            <View className="py-8 px-4 bg-gray-50 rounded-2xl items-center">
+              <Text className="text-gray-500 text-base mb-2">No decks yet</Text>
+              <Text className="text-gray-400 text-sm text-center">
+                Create your first deck to get started with studying!
+              </Text>
+            </View>
+          )}
         </View>
       </View>
 
