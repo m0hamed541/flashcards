@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import SectionHeader from "../../components/SectionHeader";
 import ColorPicker from "../../components/ColorPicker";
 import Button from "../../components/Button";
+import { useStoreActions } from "../../stores/hooks";
 
 const COLOR_OPTIONS = [
   "#2196F3",
@@ -22,8 +23,39 @@ const AddCategory = () => {
   const [categoryTitle, setCategoryTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLOR_OPTIONS[0]);
   const [isSaving, setIsSaving] = useState(false);
+  
+  const { addCategory } = useStoreActions();
 
   const isFormValid = categoryTitle.trim() !== "";
+
+  const handleSaveCategory = async () => {
+    if (!isFormValid) return;
+
+    try {
+      setIsSaving(true);
+      
+      // Add the category to the store
+      const categoryId = addCategory({
+        name: categoryTitle.trim(),
+        color: selectedColor,
+      });
+
+      console.log(`Category saved successfully with ID: ${categoryId}`);
+      
+      // Navigate back
+      router.back();
+    } catch (error) {
+      console.error('Error saving category:', error);
+      Alert.alert(
+        'Error',
+        'Failed to save category. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
       <View className="flex flex-col justify-between h-full bg-white">
@@ -48,12 +80,7 @@ const AddCategory = () => {
             title={"save category"}
             isLoading={isSaving}
             disabled={!isFormValid}
-            onPress={() => {
-              console.log(`save category:
-  Category Title: ${categoryTitle}
-  Selected Color: ${selectedColor}`);
-              router.back();
-            }}
+            onPress={handleSaveCategory}
           />
         </View>
       </View>

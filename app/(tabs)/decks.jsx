@@ -4,9 +4,7 @@ import Feather from "react-native-vector-icons/Feather";
 import SectionHeader from "../../components/SectionHeader";
 import { router } from "expo-router";
 import DeckCard from "@/components/DeckCard";
-import { index } from "drizzle-orm/gel-core";
-
-import { decks } from "../../database/dummyData";
+import { useCategories, useCategoryDecks } from "../../stores/hooks";
 
 const Decks = () => {
   const [selectedCategory, setSelectedCategory] = useState(
@@ -14,13 +12,13 @@ const Decks = () => {
   );
   const [fabExpanded, setFabExpanded] = useState(false);
 
-  const categories = [
-    "Science & Environment",
-    "Programming",
-    "Mathematics",
-    "History",
-    "Languages",
-  ];
+  const categories = useCategories();
+  const categoryNames = Object.values(categories).map(category => category.name);
+
+  console.log("Categories type:", typeof categories);
+  console.log("Categories structure:", categories);
+  console.log("Categories keys:", Object.keys(categories));
+  console.log("Is array:", Array.isArray(categories));
 
   return (
     <View className="flex-1">
@@ -31,7 +29,7 @@ const Decks = () => {
       <View className="px-6 mb-6">
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View className="flex-row gap-2">
-            {categories.map((category, index) => (
+            {categoryNames.map((category, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => setSelectedCategory(category)}
@@ -57,18 +55,7 @@ const Decks = () => {
       {/* Decks List */}
       <ScrollView className="flex-1 px-6">
         <View className="gap-4">
-          {decks.map((deck) => (
-            <DeckCard
-              key={deck.id}
-              deck_title={deck.title}
-              card_color={deck.color}
-              created_at={deck.created_at}
-              onPress={() => {
-                console.log(`Deck pressed: ${deck.title}`);
-                router.push("screens/DeckView");
-              }}
-            />
-          ))}
+          <DeckCard />
         </View>
       </ScrollView>
 
