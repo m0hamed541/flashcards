@@ -4,41 +4,20 @@ import Category from "../../components/Category";
 import DeckCard from "../../components/DeckCard";
 import IconedButton from "../../components/IconedButton";
 import SectionHeader from "../../components/SectionHeader";
-import { useCategories, useCategoryDecks } from "../../stores/hooks";
+import { useCategories, useDecks } from "../../stores/hooks";
 
 const Home = () => {
   const categories = useCategories();
-  const categoryDecks = useCategoryDecks(); // Using the imported hook
-  
+  const allDecks = useDecks();
+
   const stats = [
     { number: "34", label: "Studied cards", color: "bg-purple-100" },
-    { number: "18", label: "Decks created", color: "bg-orange-100" },
-  ];
-
-  // Get decks from your store instead of hardcoding
-  // Assuming categoryDecks provides the decks data
-  const decks = categoryDecks || [
     {
-      title: "Fundamentals on Computer Science",
-      color: "bg-blue-100",
-      id: "1",
-      cardsNum: 5,
-      createdAt: "2023-10-01",
-      updatedAt: "2023-10-02",
-    }
+      number: Object.keys(allDecks).length.toString(),
+      label: "Decks created",
+      color: "bg-orange-100",
+    },
   ];
-
-  const handleCreateDeck = () => {
-    console.log("Create Deck");
-    // Navigate to create deck screen
-    // router.push("/create-deck");
-  };
-
-  const handleStudyNow = () => {
-    console.log("Study Now");
-    // Navigate to study screen or show study options
-    // router.push("/study");
-  };
 
   // Calculate categories count properly
   const categoriesCount = Object.keys(categories).length;
@@ -67,10 +46,16 @@ const Home = () => {
 
       {/* Categories Section */}
       {categoriesCount > 0 && (
-        <View className="px-6 mb-6">
+        <View className="px-6 mb-6 flex ">
+          <View className="flex flex-row justify-between">
           <Text className="text-lg font-semibold text-gray-800 mb-4">
-            Categories: {categoriesCount} {categoriesCount === 1 ? 'category' : 'categories'}
+            Categories
           </Text>
+          <Text className="text-lg font-semibold text-gray-800 mb-4">
+           {categoriesCount}{" "}
+            {categoriesCount === 1 ? "category" : "categories"}
+          </Text>
+          </View>
           <View className="gap-3">
             {Object.entries(categories).map(([categoryId, category]) => (
               <Category
@@ -84,25 +69,38 @@ const Home = () => {
         </View>
       )}
 
-      {/* Decks Section */}
+      {/* Decks Section 
       <View className="px-6">
         <Text className="text-lg font-semibold text-gray-800 mb-4">
-          Decks ({decks.length})
+          Decks
         </Text>
         <View className="gap-4">
-          {decks.map((deck, index) => (
-            <DeckCard key={deck.id || index} deck={deck} />
-          ))}
+          {Object.keys(allDecks).length > 0 ? (
+            Object.entries(allDecks).map(([deckId, deck]) => (
+              <DeckCard
+                key={deckId}
+                deck_title={deck.name}
+                category_title={categories[deck.categoryId]?.name || "Unknown Category"}
+                cards_num={0} // TODO: Implement card count
+                created_at={new Date(deck.createdAt).toLocaleDateString()}
+                card_color={deck.color}
+              />
+            ))
+          ) : (
+            <View className="items-center justify-center py-20">
+              <Text className="text-gray-500 text-lg">No decks created yet</Text>
+              <Text className="text-gray-400 text-sm mt-2">Create your first deck to get started!</Text>
+            </View>
+          )}
         </View>
       </View>
-
+*/}
       {/* Quick Actions */}
       <View className="px-6 py-8">
         <View className="flex-row gap-2">
           <IconedButton
             text="Create Deck"
             icon="plus"
-            onPress={handleCreateDeck}
             bgColor="bg-blue-500"
             textColor="text-white"
             iconColor="white"
@@ -111,7 +109,6 @@ const Home = () => {
           <IconedButton
             text="Study Now"
             icon="play"
-            onPress={handleStudyNow}
             bgColor="bg-gray-200"
             textColor="text-gray-700"
             iconColor="#374151"

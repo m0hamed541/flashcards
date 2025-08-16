@@ -4,21 +4,35 @@ import Feather from "react-native-vector-icons/Feather";
 import SectionHeader from "../../components/SectionHeader";
 import { router } from "expo-router";
 import DeckCard from "@/components/DeckCard";
-import { useCategories, useCategoryDecks } from "../../stores/hooks";
+import { useCategories, useDecks, useCategoryDecks } from "../../stores/hooks";
 
 const Decks = () => {
-  const [selectedCategory, setSelectedCategory] = useState(
-    "Science & Environment"
-  );
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [fabExpanded, setFabExpanded] = useState(false);
 
   const categories = useCategories();
+  const allDecks = useDecks();
+  
+  // Get category names for the tabs
   const categoryNames = Object.values(categories).map(category => category.name);
+  
+  // Set initial selected category to first available category
+  React.useEffect(() => {
+    if (categoryNames.length > 0 && !selectedCategory) {
+      setSelectedCategory(categoryNames[0]);
+    }
+  }, [categoryNames, selectedCategory]);
 
-  console.log("Categories type:", typeof categories);
-  console.log("Categories structure:", categories);
-  console.log("Categories keys:", Object.keys(categories));
-  console.log("Is array:", Array.isArray(categories));
+  // Filter decks by selected category
+  const categoryId = Object.keys(categories).find(key => categories[key].name === selectedCategory);
+  const filteredDecks = categoryId 
+    ? Object.entries(allDecks).filter(([_, deck]) => deck.categoryId === categoryId)
+    : [];
+
+  console.log("Categories:", categories);
+  console.log("All decks:", allDecks);
+  console.log("Selected category:", selectedCategory);
+  console.log("Filtered decks:", filteredDecks);
 
   return (
     <View className="flex-1">
@@ -55,7 +69,23 @@ const Decks = () => {
       {/* Decks List */}
       <ScrollView className="flex-1 px-6">
         <View className="gap-4">
-          <DeckCard />
+          {filteredDecks.length > 0 ? (
+            filteredDecks.map(([deckId, deck]) => (
+              <DeckCard
+                key={deckId}
+                deck_title={deck.name}
+                category_title={categories[deck.categoryId]?.name || "Unknown Category"}
+                cards_num={0} // TODO: Implement card count
+                created_at={new Date(deck.createdAt).toLocaleDateString()}
+                card_color={deck.color}
+              />
+            ))
+          ) : (
+            <View className="flex-1 items-center justify-center py-20">
+              <Text className="text-gray-500 text-lg">No decks in this category yet</Text>
+              <Text className="text-gray-400 text-sm mt-2">Create your first deck!</Text>
+            </View>
+          )}
         </View>
       </ScrollView>
 

@@ -3,9 +3,9 @@ import { useState } from "react";
 
 const DropDownSelector = function ({
   options = {
-    1: "option 1",
-    2: "option 2", 
-    3: "option 3",
+    "1": "option 1",
+    "2": "option 2", 
+    "3": "option 3",
   },
   onSelect = (option) => {
     console.log("Selected option:", option);
@@ -17,7 +17,7 @@ const DropDownSelector = function ({
 
   // Convert dictionary to array format for easier handling
   const optionsArray = Object.entries(options).map(([key, value]) => ({
-    key: parseInt(key),
+    key: key,
     value: value
   }));
 

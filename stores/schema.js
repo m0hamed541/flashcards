@@ -18,6 +18,7 @@ export const DECK_COLUMNS = {
   NAME: 'name',
   DESCRIPTION: 'description',
   CATEGORY_ID: 'categoryId',
+  COLOR: 'color',
   CREATED_AT: 'createdAt',
   UPDATED_AT: 'updatedAt',
 };
@@ -41,6 +42,7 @@ export const DECK_SCHEMA = {
   name: { type: 'string', required: true, minLength: 1, maxLength: 100 },
   description: { type: 'string', required: false, maxLength: 500 },
   categoryId: { type: 'string', required: true },
+  color: { type: 'string', required: true, pattern: /^#[0-9A-F]{6}$/i },
 };
 
 export const CARD_SCHEMA = {

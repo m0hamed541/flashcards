@@ -2,7 +2,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { SafeAreaView } from "react-native";
 import { useEffect } from "react";
-import { Provider, TinyBaseProvider, useCreateStore } from "tinybase/ui-react";
+import { Provider } from "tinybase/ui-react";
 
 import "../constants/global.css";
 

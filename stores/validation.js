@@ -74,6 +74,7 @@ export const sanitizeDeck = (deckData) => {
     name: deckData.name?.trim() || '',
     description: deckData.description?.trim() || '',
     categoryId: deckData.categoryId || '',
+    color: deckData.color || '#2196F3',
   };
 };
 
