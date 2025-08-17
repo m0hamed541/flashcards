@@ -24,7 +24,7 @@ export default function BottomNavigationBar({
         }}
       >
         {state.routes.map((route, index) => {
-          console.log(route);
+          //console.log(route);
           const { options } = descriptors[route.key];
           const label =
             options.tabBarLabel !== undefined

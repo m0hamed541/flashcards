@@ -1,4 +1,5 @@
 import { Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 
 export default function DeckCard({
   deck_title = "Sample deck",
@@ -8,14 +9,16 @@ export default function DeckCard({
   category_color = "#3498db", // Default color
   card_color = "#ffffff", // Default card color
   card_text_color = "#d400ffff", // Default text color
-
-  onPress = () => {
-    console.log("Deck pressed");
-  },
+  deckId,
 }) {
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={() => {
+        router.push({
+          pathname: "/screens/DeckView",
+          params: { deckId: deckId },
+        });
+      }}
       className="bg-white rounded-2xl p-4 shadow-sm"
       style={{ backgroundColor: card_color, color: card_text_color }}
     >

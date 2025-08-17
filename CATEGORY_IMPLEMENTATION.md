@@ -56,7 +56,7 @@ const handleSaveCategory = () => {
       name: "Programming",
       color: "#2196F3"
     });
-    console.log('Category created with ID:', categoryId);
+    //console.log('Category created with ID:', categoryId);
   } catch (error) {
     console.error('Validation error:', error.message);
   }

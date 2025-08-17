@@ -40,7 +40,7 @@ const AddCategory = () => {
         color: selectedColor,
       });
 
-      console.log(`Category saved successfully with ID: ${categoryId}`);
+      //console.log(`Category saved successfully with ID: ${categoryId}`);
       
       // Navigate back
       router.back();

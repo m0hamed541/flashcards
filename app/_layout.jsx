@@ -38,6 +38,10 @@ export default function RootLayout() {
             name="screens/DeckView"
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="screens/Learning"
+            options={{ headerShown: false }}
+          />
         </Stack>
     </Provider>
   );

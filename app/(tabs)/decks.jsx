@@ -4,7 +4,7 @@ import Feather from "react-native-vector-icons/Feather";
 import SectionHeader from "../../components/SectionHeader";
 import { router } from "expo-router";
 import DeckCard from "@/components/DeckCard";
-import { useCategories, useDecks, useCategoryDecks } from "../../stores/hooks";
+import { useCategories, useDecks, useCategoryDecks, useCardsByDeck } from "../../stores/hooks";
 
 const Decks = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -29,10 +29,16 @@ const Decks = () => {
     ? Object.entries(allDecks).filter(([_, deck]) => deck.categoryId === categoryId)
     : [];
 
-  console.log("Categories:", categories);
-  console.log("All decks:", allDecks);
-  console.log("Selected category:", selectedCategory);
-  console.log("Filtered decks:", filteredDecks);
+  // Helper function to get card count for a deck
+  const getDeckCardCount = (deckId) => {
+    const deckCards = useCardsByDeck(deckId);
+    return Object.keys(deckCards).length;
+  };
+
+  //console.log("Categories:", categories);
+  //console.log("All decks:", allDecks);
+  //console.log("Selected category:", selectedCategory);
+  //console.log("Filtered decks:", filteredDecks);
 
   return (
     <View className="flex-1">
@@ -70,16 +76,20 @@ const Decks = () => {
       <ScrollView className="flex-1 px-6">
         <View className="gap-4">
           {filteredDecks.length > 0 ? (
-            filteredDecks.map(([deckId, deck]) => (
-              <DeckCard
-                key={deckId}
-                deck_title={deck.name}
-                category_title={categories[deck.categoryId]?.name || "Unknown Category"}
-                cards_num={0} // TODO: Implement card count
-                created_at={new Date(deck.createdAt).toLocaleDateString()}
-                card_color={deck.color}
-              />
-            ))
+            filteredDecks.map(([deckId, deck]) => {
+              const cardCount = getDeckCardCount(deckId);
+              return (
+                <DeckCard
+                  key={deckId}
+                  deckId={deckId}
+                  deck_title={deck.name}
+                  category_title={categories[deck.categoryId]?.name || "Unknown Category"}
+                  cards_num={cardCount}
+                  created_at={new Date(deck.createdAt).toLocaleDateString()}
+                  card_color={deck.color}
+                />
+              );
+            })
           ) : (
             <View className="flex-1 items-center justify-center py-20">
               <Text className="text-gray-500 text-lg">No decks in this category yet</Text>
@@ -98,7 +108,7 @@ const Decks = () => {
               onPress={() => {
                 setFabExpanded(false);
                 router.push("../screens/AddDeck");
-                console.log("Add Deck");
+                //console.log("Add Deck");
               }}
             >
               <Feather name="plus-square" size={20} color="#2563eb" />
@@ -109,7 +119,7 @@ const Decks = () => {
               onPress={() => {
                 setFabExpanded(false);
                 router.push("../screens/AddCard");
-                console.log("Add Card");
+                //console.log("Add Card");
               }}
             >
               <Feather name="file-plus" size={20} color="#22c55e" />
@@ -122,13 +132,11 @@ const Decks = () => {
               onPress={() => {
                 setFabExpanded(false);
                 router.push("../screens/AddCategory");
-                console.log("Add Category");
+                //console.log("Add Category");
               }}
             >
               <Feather name="folder-plus" size={20} color="#f59e42" />
-              <Text className="ml-3 text-orange-500 font-semibold">
-                Add Category
-              </Text>
+              <Text className="ml-3 text-orange-500 font-semibold">Add Category</Text>
             </TouchableOpacity>
           </View>
         )}

@@ -1,5 +1,11 @@
 // Data validation utilities for TinyBase
-import { CATEGORY_SCHEMA, DECK_SCHEMA, CARD_SCHEMA } from './schema';
+import { 
+  CATEGORY_SCHEMA, 
+  DECK_SCHEMA, 
+  CARD_SCHEMA, 
+  LEARNING_SESSION_SCHEMA,
+  CARD_PROGRESS_SCHEMA
+} from './schema';
 
 // Generic validation function
 const validateData = (data, schema) => {
@@ -39,6 +45,27 @@ const validateData = (data, schema) => {
       if (rules.pattern && !rules.pattern.test(value)) {
         errors.push(`${field} format is invalid`);
       }
+
+      // Enum validation
+      if (rules.enum && !rules.enum.includes(value)) {
+        errors.push(`${field} must be one of: ${rules.enum.join(', ')}`);
+      }
+    }
+
+    if (rules.type === 'number') {
+      if (typeof value !== 'number' || isNaN(value)) {
+        errors.push(`${field} must be a number`);
+        continue;
+      }
+
+      // Min/Max validation
+      if (rules.min !== undefined && value < rules.min) {
+        errors.push(`${field} must be at least ${rules.min}`);
+      }
+
+      if (rules.max !== undefined && value > rules.max) {
+        errors.push(`${field} must be no more than ${rules.max}`);
+      }
     }
   }
 
@@ -61,6 +88,14 @@ export const validateCard = (cardData) => {
   return validateData(cardData, CARD_SCHEMA);
 };
 
+export const validateLearningSession = (sessionData) => {
+  return validateData(sessionData, LEARNING_SESSION_SCHEMA);
+};
+
+export const validateCardProgress = (progressData) => {
+  return validateData(progressData, CARD_PROGRESS_SCHEMA);
+};
+
 // Sanitize data before saving
 export const sanitizeCategory = (categoryData) => {
   return {
@@ -75,6 +110,8 @@ export const sanitizeDeck = (deckData) => {
     description: deckData.description?.trim() || '',
     categoryId: deckData.categoryId || '',
     color: deckData.color || '#2196F3',
+    totalLearned: deckData.totalLearned || 0,
+    lastStudied: deckData.lastStudied || null,
   };
 };
 
@@ -83,5 +120,32 @@ export const sanitizeCard = (cardData) => {
     front: cardData.front?.trim() || '',
     back: cardData.back?.trim() || '',
     deckId: cardData.deckId || '',
+    difficulty: cardData.difficulty || 'medium',
+    lastReviewed: cardData.lastReviewed || null,
+    reviewCount: cardData.reviewCount || 0,
+    correctCount: cardData.correctCount || 0,
+    nextReview: cardData.nextReview || null,
+  };
+};
+
+export const sanitizeLearningSession = (sessionData) => {
+  return {
+    deckId: sessionData.deckId || '',
+    startedAt: sessionData.startedAt || new Date().toISOString(),
+    completedAt: sessionData.completedAt || null,
+    totalCards: sessionData.totalCards || 0,
+    correctAnswers: sessionData.correctAnswers || 0,
+    accuracy: sessionData.accuracy || 0,
+    duration: sessionData.duration || 0,
+  };
+};
+
+export const sanitizeCardProgress = (progressData) => {
+  return {
+    cardId: progressData.cardId || '',
+    deckId: progressData.deckId || '',
+    sessionId: progressData.sessionId || '',
+    result: progressData.result || 'incorrect',
+    responseTime: progressData.responseTime || null,
   };
 };

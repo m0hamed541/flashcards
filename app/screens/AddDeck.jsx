@@ -58,7 +58,7 @@ const AddDeck = () => {
         color: selectedColor,
       });
 
-      console.log(`Deck saved successfully with ID: ${deckId}`);
+      //console.log(`Deck saved successfully with ID: ${deckId}`);
       
       // Navigate back
       router.back();
@@ -103,7 +103,7 @@ const AddDeck = () => {
             placeholder="Select a category"
             selectedOption={selectedCategory}
             onSelect={(option) => {
-              console.log("Selected category:", option);
+              //console.log("Selected category:", option);
               setSelectedCategory(option.key);
             }}
           />

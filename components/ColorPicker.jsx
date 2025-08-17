@@ -15,7 +15,7 @@ const ColorPicker = function ({
   ],
   selectedColor = "#2196F3",
   onSelect = (color) => {
-    console.log("Selected color:", color);
+    //console.log("Selected color:", color);
   },
   itemsPerRow = 5,
 }) {

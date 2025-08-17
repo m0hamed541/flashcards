@@ -44,7 +44,7 @@ const AddCard = () => {
         deckId: selectedDeck,
       });
 
-      console.log(`Card saved successfully with ID: ${cardId}`);
+      //console.log(`Card saved successfully with ID: ${cardId}`);
       
       // Navigate back
       router.back();
@@ -72,7 +72,7 @@ const AddCard = () => {
               placeholder="Select a deck"
               selectedOption={selectedDeck}
               onSelect={(option) => {
-                console.log("Selected deck:", option);
+                //console.log("Selected deck:", option);
                 setSelectedDeck(option.key);
               }}
             />

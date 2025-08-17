@@ -8,7 +8,7 @@ const DropDownSelector = function ({
     "3": "option 3",
   },
   onSelect = (option) => {
-    console.log("Selected option:", option);
+    //console.log("Selected option:", option);
   },
   selectedOption = null,
   placeholder = "Select an option",
